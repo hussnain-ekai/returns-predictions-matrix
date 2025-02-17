@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: ml_return_prediction_training_data
+    description: "Denormalized one flat table for machine learning return prediction training data. This model aggregates data from returns, orders, customers, and related transactional data to support predictive analytics."
+    columns:
+      - name: return_id
+        description: "The primary identifier for a return."
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: "The identifier for the order related to the return."
+        tests:
+          - not_null
+      - name: customer_external_id
+        description: "External identifier for the customer."
+        tests:
+          - not_null
+      - name: refund_amount
+        description: "The amount refunded for the return."
+        tests:
+          - not_null
+      - name: refund_transaction_date
+        description: "The date when the refund was transacted."
+      - name: order_date
+        description: "The date of the original order."
+      - name: order_total
+        description: "Total value of the original order."
+      - name: sales_channel
+        description: "The channel through which the sale was made."
+      - name: product_categories
+        description: "Categories associated with the product(s) in the order."
+      - name: product_brands
+        description: "Brands associated with the product(s) in the order."
+      - name: shipment_status
+        description: "Status of the shipment associated with the order."
+      - name: total_order_value
+        description: "The total value of the order, included for metric comparison."
