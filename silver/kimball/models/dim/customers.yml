@@ -1,0 +1,47 @@
+version: 2
+models:
+-   name: customers
+    columns:
+    -   name: customer_key
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: customer_external_id
+        tests:
+        - not_null
+        - anonymized
+        meta:
+            column_type: varchar
+    -   name: first_name
+        tests:
+        - not_null
+        - anonymized
+        meta:
+            column_type: varchar
+    -   name: last_name
+        tests:
+        - not_null
+        - anonymized
+        meta:
+            column_type: varchar
+    -   name: email
+        tests:
+        - not_null
+        - valid_format
+        - anonymized
+        meta:
+            column_type: varchar
+    -   name: created_at
+        tests:
+        - not_null
+        - timestamp
+        meta:
+            column_type: timestamp
+    -   name: updated_at
+        tests:
+        - not_null
+        - timestamp
+        meta:
+            column_type: timestamp

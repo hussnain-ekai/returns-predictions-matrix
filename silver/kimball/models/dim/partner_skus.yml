@@ -1,0 +1,35 @@
+version: 2
+models:
+-   name: partner_skus
+    columns:
+    -   name: partner_sku_key
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: partner_name
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: partner_sku
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: internal_sku
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: created_at
+        tests:
+        - not_null
+        meta:
+            column_type: timestamp
+    -   name: updated_at
+        tests:
+        - not_null
+        meta:
+            column_type: timestamp

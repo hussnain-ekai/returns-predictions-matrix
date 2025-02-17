@@ -1,0 +1,42 @@
+version: 2
+models:
+-   name: stg_liquidation_listings
+    columns:
+    -   name: listing_id
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: return_item_id
+        
+        meta:
+            column_type: int
+    -   name: partner_sku_id
+        
+        meta:
+            column_type: int
+    -   name: condition
+        
+        meta:
+            column_type: varchar
+    -   name: sold_price
+        
+        meta:
+            column_type: decimal
+    -   name: listing_date
+        
+        meta:
+            column_type: date
+    -   name: buyer_id
+        
+        meta:
+            column_type: varchar
+    -   name: created_at
+        
+        meta:
+            column_type: date
+    -   name: updated_at
+        
+        meta:
+            column_type: date

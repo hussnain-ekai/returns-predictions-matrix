@@ -1,0 +1,51 @@
+version: 2
+models:
+-   name: orders
+    columns:
+    -   name: order_key
+        tests:
+        - unique
+        - not_null
+        - Ensure surrogate key is correctly generated using order_id
+        meta:
+            column_type: int
+    -   name: order_external_id
+        tests:
+        - not_null
+        - trim_and_anonymize_check
+        meta:
+            column_type: varchar
+    -   name: customer_id
+        tests:
+        - not_null
+        - 'foreign_key: stg_customers.customer_id'
+        meta:
+            column_type: int
+    -   name: order_date
+        tests:
+        - valid_date
+        - format_validation
+        meta:
+            column_type: date
+    -   name: order_total
+        tests:
+        - not_null
+        - aggregated_sum_validation
+        meta:
+            column_type: decimal
+    -   name: sales_channel
+        tests:
+        - not_null
+        - format_validation
+        meta:
+            column_type: varchar
+    -   name: created_at
+        tests:
+        - valid_date
+        meta:
+            column_type: date
+    -   name: updated_at
+        tests:
+        - valid_date
+        meta:
+            column_type: date

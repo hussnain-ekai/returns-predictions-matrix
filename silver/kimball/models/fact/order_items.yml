@@ -1,0 +1,44 @@
+version: 2
+models:
+-   name: order_items
+    columns:
+    -   name: order_item_key
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: order_id
+        tests:
+        - not_null
+        meta:
+            column_type: int
+    -   name: sku
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: quantity
+        tests:
+        - not_null
+        - non_negative
+        meta:
+            column_type: int
+    -   name: unit_price
+        tests:
+        - not_null
+        - non_negative
+        meta:
+            column_type: decimal
+    -   name: created_at
+        tests:
+        - not_null
+        - valid_date_format
+        meta:
+            column_type: date
+    -   name: updated_at
+        tests:
+        - not_null
+        - valid_date_format
+        meta:
+            column_type: date

@@ -1,0 +1,33 @@
+version: 2
+models:
+-   name: condition_grades
+    columns:
+    -   name: grade_key
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: grade_code
+        tests:
+        - not_null
+        - format_consistency
+        meta:
+            column_type: varchar
+    -   name: description
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: created_at
+        tests:
+        - not_null
+        - valid_timestamp
+        meta:
+            column_type: timestamp
+    -   name: updated_at
+        tests:
+        - not_null
+        - valid_timestamp
+        meta:
+            column_type: timestamp

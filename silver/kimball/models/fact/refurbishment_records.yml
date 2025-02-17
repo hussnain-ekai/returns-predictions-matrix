@@ -1,0 +1,62 @@
+version: 2
+models:
+-   name: refurbishment_records
+    columns:
+    -   name: refurb_key
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: return_item_id
+        tests:
+        - not_null
+        - 'relationships: stg_return_items.return_item_id'
+        meta:
+            column_type: int
+    -   name: partner_sku_id
+        tests:
+        - not_null
+        - 'relationships: stg_partner_skus.partner_sku_id'
+        meta:
+            column_type: int
+    -   name: refurb_grade
+        tests:
+        - not_null
+        - 'accepted_values: from stg_condition_grades.grade_code'
+        meta:
+            column_type: varchar
+    -   name: cost_of_refurb
+        tests:
+        - not_null
+        - non_negative
+        meta:
+            column_type: decimal
+    -   name: refurb_date
+        tests:
+        - not_null
+        - valid_date
+        meta:
+            column_type: date
+    -   name: warranty_period_days
+        tests:
+        - not_null
+        - 'range: >=0'
+        meta:
+            column_type: int
+    -   name: notes
+        
+        meta:
+            column_type: varchar
+    -   name: created_at
+        tests:
+        - not_null
+        - valid_date
+        meta:
+            column_type: date
+    -   name: updated_at
+        tests:
+        - not_null
+        - valid_date
+        meta:
+            column_type: date

@@ -1,0 +1,46 @@
+version: 2
+models:
+-   name: financial_transactions
+    columns:
+    -   name: transaction_key
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: return_id
+        tests:
+        - not_null
+        - 'foreign_key: stg_returns.return_id'
+        meta:
+            column_type: int
+    -   name: transaction_type
+        tests:
+        - not_null
+        - 'accepted_value: Refund'
+        meta:
+            column_type: varchar
+    -   name: amount
+        tests:
+        - not_null
+        - non_negative
+        meta:
+            column_type: decimal
+    -   name: transaction_date
+        tests:
+        - not_null
+        - valid_date_format
+        meta:
+            column_type: date
+    -   name: created_at
+        tests:
+        - not_null
+        - valid_date_format
+        meta:
+            column_type: date
+    -   name: updated_at
+        tests:
+        - not_null
+        - valid_date_format
+        meta:
+            column_type: date

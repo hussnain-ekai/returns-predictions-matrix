@@ -1,0 +1,30 @@
+version: 2
+models:
+-   name: stg_partner_skus
+    columns:
+    -   name: partner_sku_id
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: partner_name
+        
+        meta:
+            column_type: varchar
+    -   name: partner_sku
+        
+        meta:
+            column_type: varchar
+    -   name: internal_sku
+        
+        meta:
+            column_type: varchar
+    -   name: created_at
+        
+        meta:
+            column_type: varchar
+    -   name: updated_at
+        
+        meta:
+            column_type: varchar

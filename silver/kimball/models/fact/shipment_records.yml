@@ -1,0 +1,64 @@
+version: 2
+models:
+-   name: shipment_records
+    columns:
+    -   name: shipment_key
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: tracking_number
+        tests:
+        - not_null
+        - regex:^([A-Z0-9]+)$
+        meta:
+            column_type: varchar
+    -   name: origin_location_id
+        tests:
+        - not_null
+        - foreign_key
+        meta:
+            column_type: int
+    -   name: destination_location_id
+        tests:
+        - not_null
+        - foreign_key
+        meta:
+            column_type: int
+    -   name: pickup_date
+        tests:
+        - not_null
+        - valid_date
+        meta:
+            column_type: date
+    -   name: delivery_date
+        tests:
+        - not_null
+        - valid_date
+        meta:
+            column_type: date
+    -   name: status
+        tests:
+        - not_null
+        - accepted_values
+        meta:
+            column_type: varchar
+    -   name: freight_cost
+        tests:
+        - not_null
+        - gte:0
+        meta:
+            column_type: decimal
+    -   name: created_at
+        tests:
+        - not_null
+        - valid_date
+        meta:
+            column_type: date
+    -   name: updated_at
+        tests:
+        - not_null
+        - valid_date
+        meta:
+            column_type: date

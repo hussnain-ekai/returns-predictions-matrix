@@ -1,0 +1,54 @@
+version: 2
+models:
+-   name: recycling_batches
+    columns:
+    -   name: batch_key
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: processor_name
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: material_type
+        
+        meta:
+            column_type: varchar
+    -   name: weight_kg
+        tests:
+        - not_null
+        - positive
+        meta:
+            column_type: decimal
+    -   name: processing_date
+        tests:
+        - not_null
+        - date_format
+        meta:
+            column_type: date
+    -   name: disposal_cost
+        tests:
+        - not_null
+        - non_negative
+        meta:
+            column_type: decimal
+    -   name: certificate_of_destruction
+        tests:
+        - not_null
+        meta:
+            column_type: boolean
+    -   name: created_at
+        tests:
+        - not_null
+        - date_format
+        meta:
+            column_type: date
+    -   name: updated_at
+        tests:
+        - not_null
+        - date_format
+        meta:
+            column_type: date

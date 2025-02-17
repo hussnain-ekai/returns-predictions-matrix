@@ -1,0 +1,35 @@
+version: 2
+models:
+-   name: stg_order_items
+    columns:
+    -   name: order_item_id
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: order_id
+        tests:
+        - not_null
+        meta:
+            column_type: int
+    -   name: sku
+        
+        meta:
+            column_type: varchar
+    -   name: quantity
+        
+        meta:
+            column_type: int
+    -   name: unit_price
+        
+        meta:
+            column_type: decimal
+    -   name: created_at
+        
+        meta:
+            column_type: date
+    -   name: updated_at
+        
+        meta:
+            column_type: date

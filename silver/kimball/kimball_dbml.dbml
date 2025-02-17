@@ -1,0 +1,308 @@
+// DBML for Return Analysis Silver Layer on BigQuery
+
+// Schema: SILVER
+
+// Dimension Tables
+
+table condition_grades {
+  grade_key int [pk, note: "Surrogate key generated from grade_id"]
+  grade_code varchar [not null, note: "Trim and convert to uppercase"]
+  description varchar [not null, note: "Standardized description text"]
+  created_at timestamp
+  updated_at timestamp
+  
+  // Filter Rules:
+  // * Ensure primary key 'grade_id' is unique and not null
+  // * Validate data type and format consistency for 'grade_code', 'created_at', and 'updated_at'
+  // * Check that 'grade_code' and 'description' are complete
+}
+
+
+table customers {
+  customer_key int [pk, note: "Surrogate key generated from customer_id"]
+  customer_external_id varchar [note: "Anonymized external identifier"]
+  first_name varchar [not null, note: "Standardized and anonymized"]
+  last_name varchar [not null, note: "Standardized and anonymized"]
+  email varchar [not null, note: "Validated email format, anonymized if needed"]
+  created_at timestamp
+  updated_at timestamp
+  
+  // Filter Rules:
+  // * Ensure customer_id is unique
+  // * Validate email and timestamps
+  // * Anonymize PII fields
+}
+
+
+table disposition_rules {
+  rule_key int [pk, note: "Surrogate key generated from rule_id"]
+  sku varchar [not null]
+  condition_grade_id int [note: "References condition_grades"]
+  preferred_channel varchar [note: "Normalized channel text"]
+  decision_priority int
+  created_at timestamp
+  updated_at timestamp
+  
+  // Filter Rules:
+  // * Ensure rule_id is unique
+  // * Verify foreign keys for sku and condition_grade_id
+  // * Enforce allowed values and proper format for preferred_channel
+}
+
+
+table inventory_locations {
+  location_key int [pk, note: "Surrogate key generated from location_id"]
+  location_code varchar [not null, note: "Trim and validated (e.g., 'WH-XX')"]
+  location_name varchar [not null]
+  address varchar
+  city varchar [not null]
+  state varchar [note: "Expected as two-letter code"]
+  country varchar
+  created_at timestamp
+  updated_at timestamp
+  
+  // Filter Rules:
+  // * Ensure location_id is unique
+  // * Validate address-related fields and non-null location_code and location_name
+}
+
+
+table partner_skus {
+  partner_sku_key int [pk, note: "Surrogate key generated from partner_sku_id"]
+  partner_name varchar [not null]
+  partner_sku varchar [not null]
+  internal_sku varchar [note: "Must map to product_master.product_key", ref: > product_master.product_key]
+  created_at timestamp
+  updated_at timestamp
+  
+  // Filter Rules:
+  // * Ensure partner_sku_id is unique
+  // * Validate mapping of internal_sku with product_master
+  // * Check that partner_name and partner_sku are populated
+}
+
+
+table product_master {
+  product_key varchar [pk, note: "Surrogate key generated from sku"]
+  product_name varchar [not null]
+  category varchar [not null]
+  brand varchar [not null]
+  cost_basis decimal [note: "Numeric and non-negative"]
+  supplier_id varchar
+  created_at timestamp
+  updated_at timestamp
+  
+  // Filter Rules:
+  // * Ensure sku is unique
+  // * Validate numeric value for cost_basis
+  // * Check completeness of product_name, category and brand
+}
+
+// Fact Tables
+
+table disposition_outcomes {
+  disposition_outcome_key int [pk, note: "Surrogate key from disposition_outcome_id"]
+  return_item_id int [ref: > return_items.return_item_key, note: "References return_items"]
+  chosen_channel varchar [not null, note: "Standardized channel description"]
+  recovery_value decimal [note: "Valid non-negative numeric measure"]
+  processed_date date
+  created_at date
+  updated_at date
+  
+  // Filter Rules:
+  // * recovery_value must be non-negative
+  // * return_item_id must reference an existing return_items record
+  // * processed_date and timestamps must follow expected formats
+}
+
+
+table financial_transactions {
+  transaction_key int [pk, note: "Surrogate key from transaction_id"]
+  return_id int [ref: > returns.return_key, note: "Foreign key to returns"]
+  transaction_type varchar [note: "Expected to be 'Refund' after standardization"]
+  amount decimal [note: "Non-negative transactional amount"]
+  transaction_date date
+  created_at date
+  updated_at date
+  
+  // Filter Rules:
+  // * amount must be non-negative
+  // * transaction_type is approved and return_id is valid
+  // * Validate transaction_date and audit timestamps
+}
+
+
+table inventory_states {
+  inventory_state_key int [pk, note: "Surrogate key from inventory_state_id"]
+  return_item_id int [ref: > return_items.return_item_key, note: "References return_items"]
+  location_id int [ref: > inventory_locations.location_key]
+  current_condition_grade_id int [ref: > condition_grades.grade_key]
+  current_status varchar [note: "Value must be from allowed statuses"]
+  updated_at timestamp
+  
+  // Filter Rules:
+  // * Enforce referential integrity for location_id and current_condition_grade_id
+  // * Validate that current_status is an allowed value
+  // * Check updated_at for correct format
+}
+
+
+table liquidation_listings {
+  listing_key int [pk, note: "Surrogate key from listing_id"]
+  return_item_id int [ref: > return_items.return_item_key]
+  partner_sku_id int [ref: > partner_skus.partner_sku_key]
+  condition varchar [not null, note: "Standardized condition description"]
+  sold_price decimal [note: "Non-negative sold price"]
+  listing_date date
+  buyer_id varchar [not null]
+  created_at date
+  updated_at date
+  
+  // Filter Rules:
+  // * sold_price must be valid
+  // * Verify that partner_sku_id and return_item_id are valid
+  // * Check listing_date and timestamps for proper formatting
+}
+
+
+table order_items {
+  order_item_key int [pk, note: "Surrogate key from order_item_id"]
+  order_id int [ref: > orders.order_key]
+  sku varchar [ref: > product_master.product_key]
+  quantity int [note: "Non-negative value"]
+  unit_price decimal [note: "Non-negative value; used for weighted averaging"]
+  created_at date
+  updated_at date
+  
+  // Filter Rules:
+  // * quantity and unit_price must be non-negative
+  // * Validate foreign keys for order_id and sku
+  // * Ensure proper date formats in created_at and updated_at
+}
+
+
+table orders {
+  order_key int [pk, note: "Surrogate key from order_id"]
+  order_external_id varchar [note: "Anonymized if required"]
+  customer_id int [ref: > customers.customer_key]
+  order_date date
+  order_total decimal [note: "Aggregated sum from order_items"]
+  sales_channel varchar
+  created_at date
+  updated_at date
+  
+  // Filter Rules:
+  // * order_total should correctly aggregate related order_items
+  // * Ensure customer_id is valid
+  // * Validate order_date and sales_channel formatting
+}
+
+
+table recycling_batches {
+  batch_key int [pk, note: "Surrogate key from batch_id"]
+  processor_name varchar [not null]
+  material_type varchar
+  weight_kg decimal [note: "Must be positive"]
+  processing_date date
+  disposal_cost decimal [note: "Numeric and non-negative"]
+  certificate_of_destruction boolean
+  created_at date
+  updated_at date
+  
+  // Filter Rules:
+  // * weight_kg must be positive
+  // * Validate processing_date and numeric fields
+  // * Check disposal_cost and certificate_of_destruction for consistency
+}
+
+
+table refurbishment_records {
+  refurb_key int [pk, note: "Surrogate key from refurb_id"]
+  return_item_id int [ref: > return_items.return_item_key]
+  partner_sku_id int [ref: > partner_skus.partner_sku_key]
+  refurb_grade varchar [note: "Standardized grade, validated against condition_grades"]
+  cost_of_refurb decimal [note: "Non-negative refurbishment cost"]
+  refurb_date date
+  warranty_period_days int
+  notes varchar
+  created_at date
+  updated_at date
+  
+  // Filter Rules:
+  // * cost_of_refurb must be non-negative
+  // * Validate foreign key relationships with return_items, partner_skus and condition_grades
+  // * Check refurb_date and updated_at formats
+}
+
+
+table return_items {
+  return_item_key int [pk, note: "Surrogate key from return_item_id"]
+  return_id int [ref: > returns.return_key]
+  order_item_id int [ref: > order_items.order_item_key, note: "One-to-one relationship enforced"]
+  condition_received varchar [note: "Must be one of the expected values"]
+  reason_code varchar [note: "Standardized reason code"]
+  inspected_grade_id int [ref: > condition_grades.grade_key]
+  disposition_outcome_id int [ref: > disposition_outcomes.disposition_outcome_key]
+  created_at date
+  updated_at date
+  
+  // Filter Rules:
+  // * inspected_grade_id must correspond to a valid grade
+  // * Enforce one-to-one relationships with disposition_outcomes and order_items
+  // * Validate condition_received
+}
+
+
+table returns {
+  return_key int [pk, note: "Surrogate key from return_id"]
+  return_external_id varchar [note: "Anonymized if sensitive"]
+  order_id int [ref: > orders.order_key]
+  return_initiated_date date
+  return_received_date date
+  refund_issued_date date
+  created_at date
+  updated_at date
+  
+  // Filter Rules:
+  // * Date fields must be in logical chronological order
+  // * order_id must map to a valid order
+  // * Anonymize return_external_id if necessary
+}
+
+
+table shipment_records {
+  shipment_key int [pk, note: "Surrogate key from shipment_id"]
+  tracking_number varchar [not null, note: "Trim and validate tracking format"]
+  origin_location_id int [ref: > inventory_locations.location_key]
+  destination_location_id int [ref: > inventory_locations.location_key]
+  pickup_date date
+  delivery_date date
+  status varchar [note: "Standardized shipment status text"]
+  freight_cost decimal [note: "Non-negative freight cost"]
+  created_at date
+  updated_at date
+  
+  // Filter Rules:
+  // * Validate non-negative freight_cost
+  // * Ensure origin and destination exist in inventory_locations
+  // * Confirm valid date formats for pickup_date and delivery_date
+}
+
+// Dependencies (as comments for clarity)
+// - disposition_rules depends on condition_grades and product_master
+// - partner_skus depends on product_master
+// - orders depends on customers
+// - order_items depends on orders and product_master
+// - returns depends on orders
+// - financial_transactions depends on returns
+// - return_items depends on condition_grades and order_items
+// - disposition_outcomes depends on return_items
+// - inventory_states depends on inventory_locations and condition_grades
+// - liquidation_listings depends on return_items and partner_skus
+// - refurbishment_records depends on return_items, partner_skus, and condition_grades
+// - shipment_records depends on inventory_locations
+
+// Quality Gates (implemented in ETL validations outside of DBML):
+// * Source Validation: data cleansing and PII anonymization
+// * Transformation Validation: rigorous data type and key validations
+// * Load Validation: consistency and completeness checks before final load

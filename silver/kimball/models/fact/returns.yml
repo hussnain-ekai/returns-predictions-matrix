@@ -1,0 +1,47 @@
+version: 2
+models:
+-   name: returns
+    columns:
+    -   name: return_key
+        tests:
+        - unique
+        meta:
+            column_type: int
+    -   name: return_external_id
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: order_id
+        tests:
+        - not_null
+        meta:
+            column_type: int
+    -   name: return_initiated_date
+        tests:
+        - not_null
+        - accepted_values
+        meta:
+            column_type: date
+    -   name: return_received_date
+        tests:
+        - not_null
+        - accepted_values
+        meta:
+            column_type: date
+    -   name: refund_issued_date
+        tests:
+        - not_null
+        - accepted_values
+        meta:
+            column_type: date
+    -   name: created_at
+        tests:
+        - not_null
+        meta:
+            column_type: date
+    -   name: updated_at
+        tests:
+        - not_null
+        meta:
+            column_type: date

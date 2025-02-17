@@ -1,0 +1,47 @@
+version: 2
+models:
+-   name: stg_refurbishment_records
+    columns:
+    -   name: refurb_id
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: return_item_id
+        tests:
+        - not_null
+        meta:
+            column_type: int
+    -   name: partner_sku_id
+        
+        meta:
+            column_type: int
+    -   name: refurb_grade
+        
+        meta:
+            column_type: varchar
+    -   name: cost_of_refurb
+        
+        meta:
+            column_type: decimal
+    -   name: refurb_date
+        
+        meta:
+            column_type: date
+    -   name: warranty_period_days
+        
+        meta:
+            column_type: int
+    -   name: notes
+        
+        meta:
+            column_type: varchar
+    -   name: created_at
+        
+        meta:
+            column_type: date
+    -   name: updated_at
+        
+        meta:
+            column_type: date

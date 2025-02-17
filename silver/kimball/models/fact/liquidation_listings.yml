@@ -1,0 +1,50 @@
+version: 2
+models:
+-   name: liquidation_listings
+    columns:
+    -   name: listing_key
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: return_item_id
+        tests:
+        - not_null
+        meta:
+            column_type: int
+    -   name: partner_sku_id
+        tests:
+        - not_null
+        meta:
+            column_type: int
+    -   name: condition
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: sold_price
+        tests:
+        - not_null
+        meta:
+            column_type: decimal
+    -   name: listing_date
+        tests:
+        - not_null
+        meta:
+            column_type: date
+    -   name: buyer_id
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: created_at
+        tests:
+        - not_null
+        meta:
+            column_type: date
+    -   name: updated_at
+        tests:
+        - not_null
+        meta:
+            column_type: date

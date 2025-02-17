@@ -1,0 +1,30 @@
+version: 2
+models:
+-   name: stg_condition_grades
+    columns:
+    -   name: grade_id
+        tests:
+        - not_null
+        - unique
+        meta:
+            column_type: int
+    -   name: grade_code
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: description
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: created_at
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: updated_at
+        tests:
+        - not_null
+        meta:
+            column_type: varchar

@@ -1,0 +1,42 @@
+version: 2
+models:
+-   name: stg_return_items
+    columns:
+    -   name: return_item_id
+        tests:
+        - not_null
+        - unique
+        meta:
+            column_type: int
+    -   name: return_id
+        
+        meta:
+            column_type: int
+    -   name: order_item_id
+        
+        meta:
+            column_type: int
+    -   name: condition_received
+        
+        meta:
+            column_type: varchar
+    -   name: reason_code
+        
+        meta:
+            column_type: varchar
+    -   name: inspected_grade_id
+        
+        meta:
+            column_type: int
+    -   name: disposition_outcome_id
+        
+        meta:
+            column_type: int
+    -   name: created_at
+        
+        meta:
+            column_type: date
+    -   name: updated_at
+        
+        meta:
+            column_type: date

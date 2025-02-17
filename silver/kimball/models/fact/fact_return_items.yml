@@ -1,0 +1,51 @@
+version: 2
+models:
+-   name: return_items
+    columns:
+    -   name: return_item_key
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: return_id
+        tests:
+        - not_null
+        meta:
+            column_type: int
+    -   name: order_item_id
+        tests:
+        - not_null
+        meta:
+            column_type: int
+    -   name: condition_received
+        tests:
+        - not_null
+        - accepted_values
+        meta:
+            column_type: varchar
+    -   name: reason_code
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: inspected_grade_id
+        tests:
+        - not_null
+        - 'foreign_key: stg_condition_grades.grade_id'
+        meta:
+            column_type: int
+    -   name: disposition_outcome_id
+        tests:
+        - not_null
+        meta:
+            column_type: int
+    -   name: created_at
+        tests:
+        - not_null
+        meta:
+            column_type: date
+    -   name: updated_at
+        
+        meta:
+            column_type: date
