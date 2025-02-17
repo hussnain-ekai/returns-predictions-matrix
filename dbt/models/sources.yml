@@ -1,0 +1,174 @@
+version: 2
+sources:
+-   name: dbt_project_source
+    database: your_database
+    schema: your_schema
+    tables:
+    -   name: condition_grades
+        columns:
+        -   name: grade_id
+        -   name: grade_code
+        -   name: description
+        -   name: created_at
+        -   name: updated_at
+    -   name: customers
+        columns:
+        -   name: customer_id
+        -   name: customer_external_id
+        -   name: first_name
+        -   name: last_name
+        -   name: email
+        -   name: created_at
+        -   name: updated_at
+    -   name: disposition_outcomes
+        columns:
+        -   name: disposition_outcome_id
+        -   name: return_item_id
+        -   name: chosen_channel
+        -   name: recovery_value
+        -   name: processed_date
+        -   name: notes
+        -   name: created_at
+        -   name: updated_at
+    -   name: disposition_rules
+        columns:
+        -   name: rule_id
+        -   name: sku
+        -   name: condition_grade_id
+        -   name: preferred_channel
+        -   name: decision_priority
+        -   name: created_at
+        -   name: updated_at
+    -   name: financial_transactions
+        columns:
+        -   name: transaction_id
+        -   name: return_id
+        -   name: transaction_type
+        -   name: amount
+        -   name: transaction_date
+        -   name: notes
+        -   name: created_at
+        -   name: updated_at
+    -   name: inventory_locations
+        columns:
+        -   name: location_id
+        -   name: location_code
+        -   name: location_name
+        -   name: address
+        -   name: city
+        -   name: state
+        -   name: country
+        -   name: created_at
+        -   name: updated_at
+    -   name: inventory_states
+        columns:
+        -   name: inventory_state_id
+        -   name: return_item_id
+        -   name: location_id
+        -   name: current_condition_grade_id
+        -   name: current_status
+        -   name: updated_at
+    -   name: liquidation_listings
+        columns:
+        -   name: listing_id
+        -   name: return_item_id
+        -   name: partner_sku_id
+        -   name: condition
+        -   name: sold_price
+        -   name: listing_date
+        -   name: buyer_id
+        -   name: created_at
+        -   name: updated_at
+    -   name: order_items
+        columns:
+        -   name: order_item_id
+        -   name: order_id
+        -   name: sku
+        -   name: quantity
+        -   name: unit_price
+        -   name: created_at
+        -   name: updated_at
+    -   name: orders
+        columns:
+        -   name: order_id
+        -   name: order_external_id
+        -   name: customer_id
+        -   name: order_date
+        -   name: order_total
+        -   name: sales_channel
+        -   name: created_at
+        -   name: updated_at
+    -   name: partner_skus
+        columns:
+        -   name: partner_sku_id
+        -   name: partner_name
+        -   name: partner_sku
+        -   name: internal_sku
+        -   name: created_at
+        -   name: updated_at
+    -   name: product_master
+        columns:
+        -   name: sku
+        -   name: product_name
+        -   name: category
+        -   name: brand
+        -   name: cost_basis
+        -   name: supplier_id
+        -   name: created_at
+        -   name: updated_at
+    -   name: recycling_batches
+        columns:
+        -   name: batch_id
+        -   name: processor_name
+        -   name: material_type
+        -   name: weight_kg
+        -   name: processing_date
+        -   name: disposal_cost
+        -   name: certificate_of_destruction
+        -   name: created_at
+        -   name: updated_at
+    -   name: refurbishment_records
+        columns:
+        -   name: refurb_id
+        -   name: return_item_id
+        -   name: partner_sku_id
+        -   name: refurb_grade
+        -   name: cost_of_refurb
+        -   name: refurb_date
+        -   name: warranty_period_days
+        -   name: notes
+        -   name: created_at
+        -   name: updated_at
+    -   name: return_items
+        columns:
+        -   name: return_item_id
+        -   name: return_id
+        -   name: order_item_id
+        -   name: condition_received
+        -   name: reason_code
+        -   name: inspected_grade_id
+        -   name: disposition_outcome_id
+        -   name: created_at
+        -   name: updated_at
+    -   name: returns
+        columns:
+        -   name: return_id
+        -   name: return_external_id
+        -   name: order_id
+        -   name: return_initiated_date
+        -   name: return_received_date
+        -   name: refund_issued_date
+        -   name: created_at
+        -   name: updated_at
+    -   name: shipment_records
+        columns:
+        -   name: shipment_id
+        -   name: tracking_number
+        -   name: origin_location_id
+        -   name: destination_location_id
+        -   name: pickup_date
+        -   name: delivery_date
+        -   name: status
+        -   name: freight_cost
+        -   name: created_at
+        -   name: updated_at

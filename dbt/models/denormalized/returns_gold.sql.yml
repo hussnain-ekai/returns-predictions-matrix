@@ -1,0 +1,34 @@
+version: 2
+models:
+  - name: returns_gold
+    description: |
+      This model denormalizes data from multiple source tables including returns, orders, customers, products, and shipment records.
+      The grain of the table is defined by return_items.return_item_id.
+    columns:
+      - name: return_item_id
+        description: Primary key for the return item.
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: Identifier for the order.
+        tests:
+          - not_null
+      - name: customer_id
+        description: Identifier for the customer.
+        tests:
+          - not_null
+      - name: sku
+        description: Stock Keeping Unit for the product.
+        tests:
+          - not_null
+      - name: transaction_date
+        description: Date when the transaction was recorded.
+        tests:
+          - not_null
+      - name: tracking_number
+        description: Shipment tracking number.
+    tests: 
+      - dbt_utils.equality:
+          actual: "select count(*) from {{ this }} where return_item_id is null"
+          expected: 0
