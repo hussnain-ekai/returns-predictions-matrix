@@ -1,0 +1,7 @@
+version: 2
+sources:
+  - name: source_data
+    database: analytics
+    schema: raw_data
+    tables:
+      - name: returns

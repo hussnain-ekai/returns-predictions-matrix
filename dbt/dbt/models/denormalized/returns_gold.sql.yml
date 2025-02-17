@@ -1,0 +1,34 @@
+version: 2
+models:
+  - name: returns_gold
+    description: "Denormalized table for training ML return prediction on engineered features and a binary label. This model derives natural features, additional engineered features, and a binary label column while preserving privacy by masking PII."
+    columns:
+      - name: id
+        description: "Primary key for the return record (alias for return_item_id)."
+        tests:
+          - not_null
+          - unique
+      - name: order_date
+        description: "Date when the order was placed."
+        tests:
+          - not_null
+      - name: product_id
+        description: "Identifier for the product."
+        tests:
+          - not_null
+      - name: return_reason
+        description: "Reason for the product return."
+      - name: order_dow
+        description: "Day of the week derived from order_date."
+      - name: order_month
+        description: "Month derived from order_date."
+      - name: age_bracket
+        description: "Customer age bracket derived from date_of_birth."
+      - name: other_feature
+        description: "Additional engineered feature from raw data."
+      - name: customer_age
+        description: "Computed customer age from date_of_birth (used for internal bucketing, not exposing the raw value)."
+      - name: label
+        description: "Binary label indicating return prediction target (1 for Damaged/Defective, otherwise 0)."
+        tests:
+          - not_null
