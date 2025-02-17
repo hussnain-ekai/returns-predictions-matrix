@@ -1,0 +1,38 @@
+version: 2
+models:
+-   name: stg_product_master
+    columns:
+    -   name: sku
+        tests:
+        - not_null
+        - unique
+        meta:
+            column_type: varchar
+    -   name: product_name
+        
+        meta:
+            column_type: varchar
+    -   name: category
+        
+        meta:
+            column_type: varchar
+    -   name: brand
+        
+        meta:
+            column_type: varchar
+    -   name: cost_basis
+        
+        meta:
+            column_type: decimal
+    -   name: supplier_id
+        
+        meta:
+            column_type: varchar
+    -   name: created_at
+        
+        meta:
+            column_type: varchar
+    -   name: updated_at
+        
+        meta:
+            column_type: varchar

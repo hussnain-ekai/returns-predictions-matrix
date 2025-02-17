@@ -1,0 +1,40 @@
+version: 2
+models:
+-   name: stg_recycling_batches
+    columns:
+    -   name: batch_id
+        
+        meta:
+            column_type: int
+    -   name: processor_name
+        
+        meta:
+            column_type: string
+    -   name: material_type
+        
+        meta:
+            column_type: string
+    -   name: weight_kg
+        
+        meta:
+            column_type: decimal
+    -   name: processing_date
+        
+        meta:
+            column_type: date
+    -   name: disposal_cost
+        
+        meta:
+            column_type: decimal
+    -   name: certificate_of_destruction
+        
+        meta:
+            column_type: boolean
+    -   name: created_at
+        
+        meta:
+            column_type: date
+    -   name: updated_at
+        
+        meta:
+            column_type: date

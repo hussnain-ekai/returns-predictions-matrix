@@ -1,0 +1,45 @@
+version: 2
+models:
+-   name: product_master
+    columns:
+    -   name: product_key
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: product_name
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: category
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: brand
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: cost_basis
+        tests:
+        - not_null
+        - accepted_range>=0
+        meta:
+            column_type: decimal
+    -   name: supplier_id
+        
+        meta:
+            column_type: varchar
+    -   name: created_at
+        tests:
+        - not_null
+        meta:
+            column_type: timestamp
+    -   name: updated_at
+        tests:
+        - not_null
+        meta:
+            column_type: timestamp

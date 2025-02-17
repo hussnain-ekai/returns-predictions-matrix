@@ -1,0 +1,38 @@
+version: 2
+models:
+-   name: stg_returns
+    columns:
+    -   name: return_id
+        tests:
+        - not_null
+        - unique
+        meta:
+            column_type: int
+    -   name: return_external_id
+        
+        meta:
+            column_type: varchar
+    -   name: order_id
+        
+        meta:
+            column_type: int
+    -   name: return_initiated_date
+        
+        meta:
+            column_type: date
+    -   name: return_received_date
+        
+        meta:
+            column_type: date
+    -   name: refund_issued_date
+        
+        meta:
+            column_type: date
+    -   name: created_at
+        
+        meta:
+            column_type: date
+    -   name: updated_at
+        
+        meta:
+            column_type: date

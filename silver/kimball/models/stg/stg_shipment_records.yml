@@ -1,0 +1,44 @@
+version: 2
+models:
+-   name: stg_shipment_records
+    columns:
+    -   name: shipment_id
+        
+        meta:
+            column_type: int
+    -   name: tracking_number
+        
+        meta:
+            column_type: varchar
+    -   name: origin_location_id
+        
+        meta:
+            column_type: int
+    -   name: destination_location_id
+        
+        meta:
+            column_type: int
+    -   name: pickup_date
+        
+        meta:
+            column_type: date
+    -   name: delivery_date
+        
+        meta:
+            column_type: date
+    -   name: status
+        
+        meta:
+            column_type: varchar
+    -   name: freight_cost
+        
+        meta:
+            column_type: decimal
+    -   name: created_at
+        
+        meta:
+            column_type: date
+    -   name: updated_at
+        
+        meta:
+            column_type: date

@@ -1,0 +1,555 @@
+version: 2
+sources:
+- name: raw
+  description: 'Contains detailed records of shipments including unique identifiers,
+    tracking numbers, origin and destination locations, pickup and delivery dates,
+    shipment status, freight cost, and audit timestamps.
+
+
+    Primary key on shipment_id; origin_location_id and destination_location_id likely
+    serve as foreign keys linking to a locations table. Time series data for shipment
+    tracking.'
+  database: ekai-dev
+  schema: retail_returns
+  tables:
+  - name: condition_grades
+    description: 'Lookup table defining condition grades for items. It includes unique
+      identifiers, grade codes, detailed descriptions of the condition, and timestamps
+      for record creation and updates.
+
+
+      The grade_id column functions as the primary key. Timestamps are used to track
+      record history and are critical for time series analysis.'
+    columns:
+    - name: grade_id
+      description: pk, "Unique identifier for each condition grade. Serves as the
+        primary key."
+      tests:
+      - unique
+      - not_null
+    - name: grade_code
+      description: '"Unique letter code representing the condition grade (e.g., A,
+        B, C)."'
+    - name: description
+      description: '"Textual explanation of the condition grade, such as `Like New`,
+        `Minor Wear`, or `Significant Wear`."'
+    - name: created_at
+      description: '"Timestamp indicating when the record was created."'
+    - name: updated_at
+      description: '"Timestamp indicating when the record was last updated."'
+  - name: customers
+    description: 'Contains detailed customer information including identifiers, personal
+      details, contact information, and timestamps for record creation and modification.
+
+
+      Holds 30,000 rows with primary customer identifiers and externally referenced
+      customer ids; timestamps capture creation and update events.'
+    columns:
+    - name: customer_id
+      description: pk, "Unique internal identifier for each customer; serves as the
+        primary key."
+      tests:
+      - unique
+      - not_null
+    - name: customer_external_id
+      description: '"Unique external identifier assigned to each customer for integration
+        with external systems."'
+    - name: first_name
+      description: '"Customer`s first name used for personalization and identification."'
+    - name: last_name
+      description: '"Customer`s last name used alongside the first name for identification."'
+    - name: email
+      description: '"Customer`s email address used for communication and login purposes."'
+    - name: created_at
+      description: '"Timestamp indicating when the customer record was created in
+        the database."'
+    - name: updated_at
+      description: '"Timestamp indicating the last time the customer record was updated."'
+  - name: disposition_outcomes
+    description: 'Stores the outcomes of item dispositions. Captures processing details
+      including chosen channels, recovery values, and timestamps.
+
+
+      disposition_outcome_id serves as the primary key while return_item_id may serve
+      as a foreign key linking to a related returns table.'
+    columns:
+    - name: disposition_outcome_id
+      description: pk, "Unique identifier for each disposition outcome. It is a primary
+        key for the table."
+      tests:
+      - unique
+      - not_null
+    - name: return_item_id
+      description: '"Unique identifier for the associated return item. Likely acts
+        as a foreign key linking to a returns table."'
+    - name: chosen_channel
+      description: '"Indicates the processing channel chosen (e.g., `Recycle`) for
+        the disposition of an item."'
+    - name: recovery_value
+      description: '"Monetary value recovered from the disposition process. Captured
+        as a floating point number."'
+    - name: processed_date
+      description: '"The date on which the disposition outcome was processed."'
+    - name: notes
+      description: '"Textual notes providing additional details regarding the disposition
+        outcome."'
+    - name: created_at
+      description: '"The date the record was created in the database."'
+    - name: updated_at
+      description: '"The date the record was last updated."'
+  - name: disposition_rules
+    description: 'This table defines rules for product disposition. It associates
+      product SKUs with condition grades, preferred disposition channels, and decision
+      priorities, and logs the creation and update timestamps.
+
+
+      Primary key is rule_id. Consider linking sku to the product catalog and condition_grade_id
+      to a condition definition table.'
+    columns:
+    - name: rule_id
+      description: pk, "Primary key for the table. A unique integer identifier for
+        each disposition rule."
+      tests:
+      - unique
+      - not_null
+    - name: sku
+      description: '"Product identifier in SKU format. Used to associate the rule
+        with a specific product."'
+    - name: condition_grade_id
+      description: '"Identifier for the condition grade of the product. Likely used
+        as a foreign key to a condition grades table."'
+    - name: preferred_channel
+      description: '"Specifies the preferred disposition channel (e.g., `Recycle`)
+        for the product."'
+    - name: decision_priority
+      description: '"Indicates the priority level of the rule when determining product
+        disposition."'
+    - name: created_at
+      description: '"Timestamp recording when the rule was created. Acts as a unique
+        marker for the record entry point."'
+    - name: updated_at
+      description: '"Timestamp recording the last update to the rule. Helps track
+        modifications over time."'
+  - name: financial_transactions
+    description: 'This table stores refund transaction details including identifiers,
+      monetary amounts, and timestamps. It is designed for tracking refund transactions
+      with comprehensive audit fields.
+
+
+      Both transaction_id and return_id are unique. The similar values suggest a potential
+      primary key relationship or use in joining with related refund records.'
+    columns:
+    - name: transaction_id
+      description: pk, "A unique identifier for each financial transaction, serving
+        as a primary key for record identification."
+      tests:
+      - unique
+      - not_null
+    - name: return_id
+      description: '"A unique identifier for the associated return, potentially used
+        to correlate refund information with related systems."'
+    - name: transaction_type
+      description: '"Specifies the type of transaction recorded; in this table all
+        entries indicate a `Refund`."'
+    - name: amount
+      description: '"The monetary amount processed in the transaction."'
+    - name: transaction_date
+      description: '"The date on which the transaction occurred."'
+    - name: notes
+      description: '"Provides additional context or details regarding the transaction,
+        such as the reason for refund."'
+    - name: created_at
+      description: '"The date when the transaction record was created in the database."'
+    - name: updated_at
+      description: '"The date when the transaction record was last updated, supporting
+        data integrity and tracking."'
+  - name: inventory_locations
+    description: 'Stores detailed information about each inventory location, including
+      unique identifiers, address details, and timestamps.
+
+
+      The location_id column serves as the primary key. Columns such as location_code
+      and location_name provide additional unique identifiers and descriptive information
+      for each location.'
+    columns:
+    - name: location_id
+      description: pk, "Primary key for the table, uniquely identifying each inventory
+        location as an integer value."
+      tests:
+      - unique
+      - not_null
+    - name: location_code
+      description: '"Unique alphanumeric code for the inventory location, following
+        a pattern like `WH-20`."'
+    - name: location_name
+      description: '"Descriptive name of the location, providing a clear indication
+        of the location`s identity such as `Warehouse 20`."'
+    - name: address
+      description: '"Physical address associated with the inventory location, including
+        street and identification details."'
+    - name: city
+      description: '"City where the inventory location is situated."'
+    - name: state
+      description: '"State code for the location, representing a two-letter abbreviation."'
+    - name: country
+      description: '"Country for the inventory location, consistently recording `USA`."'
+    - name: created_at
+      description: '"Timestamp marking when the inventory location record was created."'
+    - name: updated_at
+      description: '"Timestamp indicating the last update to the inventory location
+        record."'
+  - name: inventory_states
+    description: 'Tracks the state of inventory items by capturing condition, status,
+      location, and update timestamp details. The table uses inventory_state_id as
+      its primary key and includes columns that are likely foreign keys linking to
+      return items, locations, and condition grade entities.
+
+
+      Contains 256,134 rows (14.17MB); last modified on 2025-01-31 13:10:30.858000;
+      recommended for product data analyses.'
+    columns:
+    - name: inventory_state_id
+      description: pk, "Unique identifier for the inventory state record. Serves as
+        the primary key for the table."
+      tests:
+      - unique
+      - not_null
+    - name: return_item_id
+      description: '"Identifier for the corresponding returned item. Acts as a potential
+        foreign key linking to the returns data."'
+    - name: location_id
+      description: '"Identifier for the location associated with the inventory state.
+        Likely serves as a foreign key to a locations table."'
+    - name: current_condition_grade_id
+      description: '"Identifier representing the condition grade of the inventory
+        item. May reference a condition grades table."'
+    - name: current_status
+      description: '"Describes the current status of the inventory item, such as `Disposed`."'
+    - name: updated_at
+      description: '"Timestamp indicating when the record was last updated, ensuring
+        accurate tracking of changes."'
+  - name: liquidation_listings
+    description: 'Stores details about liquidation listings including sales data,
+      associated return item records, and partner product identifiers.
+
+
+      listing_id is unique and serves as the primary key. return_item_id is also unique
+      and may be used to relate to returned item data. partner_sku_id and buyer_id
+      are potential foreign keys linking to partner and buyer records.'
+    columns:
+    - name: listing_id
+      description: pk, "Unique identifier for each liquidation listing record; acts
+        as the primary key."
+      tests:
+      - unique
+      - not_null
+    - name: return_item_id
+      description: '"Unique identifier for the associated return item; may serve as
+        a foreign key to the returns records."'
+    - name: partner_sku_id
+      description: '"Identifier for the product SKU provided by the partner; links
+        to external product details."'
+    - name: condition
+      description: '"Describes the condition of the item (e.g., `Used-Fair`)."'
+    - name: sold_price
+      description: '"The price at which the liquidation item was sold."'
+    - name: listing_date
+      description: '"The date when the liquidation listing was created."'
+    - name: buyer_id
+      description: '"Identifier of the buyer who purchased the liquidation item; may
+        reference external buyer details."'
+    - name: created_at
+      description: '"The date when the record was first created in the system."'
+    - name: updated_at
+      description: '"The date when the record was last updated."'
+  - name: order_items
+    description: 'Stores details of individual items within an order, including product
+      identifiers, quantity, price, and timestamps. This table links orders to specific
+      products.
+
+
+      Primary key: order_item_id. The order_id column functions as a foreign key likely
+      referencing an orders table. Contains transaction data with over 1.28 million
+      rows.'
+    columns:
+    - name: order_item_id
+      description: pk, "Primary key that uniquely identifies each order item record."
+      tests:
+      - unique
+      - not_null
+    - name: order_id
+      description: '"Foreign key referencing an order in the orders table."'
+    - name: sku
+      description: '"Product SKU identifier for the ordered item."'
+    - name: quantity
+      description: '"The quantity of the product ordered."'
+    - name: unit_price
+      description: '"The per-unit price of the ordered product at the time of purchase."'
+    - name: created_at
+      description: '"The date on which the order item record was created."'
+    - name: updated_at
+      description: '"The date on which the order item record was last updated."'
+  - name: orders
+    description: 'Stores customer orders including order identifiers, customer reference,
+      monetary totals, order dates, and timestamps for record creation and updates.
+
+
+      Contains both system and external order identifiers. The order_id column serves
+      as the primary key, while customer_id likely references a customer table.'
+    columns:
+    - name: order_id
+      description: pk, "Primary key for the orders table. Uniquely identifies each
+        order as a numeric value."
+      tests:
+      - unique
+      - not_null
+    - name: order_external_id
+      description: '"Unique external identifier for the order, formatted as a string
+        (e.g., `ORD-9892`) for integration and communication purposes."'
+    - name: customer_id
+      description: '"Identifier for the customer associated with the order. Likely
+        a foreign key linking to the customers table."'
+    - name: order_date
+      description: '"The date when the order was placed."'
+    - name: order_total
+      description: '"The total monetary value of the order, represented as a floating
+        point number."'
+    - name: sales_channel
+      description: '"Specifies the channel used to place the order (e.g., Mobile App,
+        Marketplace, Website)."'
+    - name: created_at
+      description: '"The date when the order record was created in the database."'
+    - name: updated_at
+      description: '"The date when the order record was last updated."'
+  - name: partner_skus
+    description: 'This table maps vendor-provided SKU values to the systems internal
+      SKU identifiers, facilitating product and inventory tracking.
+
+
+      The table includes timestamps for record creation and updates. partner_sku_id
+      is the primary key, ensuring uniqueness of each entry.'
+    columns:
+    - name: partner_sku_id
+      description: pk, "Unique identifier for each partner SKU entry. Serves as the
+        primary key."
+      tests:
+      - unique
+      - not_null
+    - name: partner_name
+      description: '"Name of the partner vendor supplying the SKU."'
+    - name: partner_sku
+      description: '"SKU value provided by the partner representing the vendor`s product
+        code."'
+    - name: internal_sku
+      description: '"System-assigned SKU used internally to identify the corresponding
+        product."'
+    - name: created_at
+      description: '"Timestamp indicating when the record was created."'
+    - name: updated_at
+      description: '"Timestamp indicating when the record was last updated."'
+  - name: product_master
+    description: 'Contains product details including SKU, name, category, brand, cost
+      basis, supplier info, and timestamps for record creation and updates.
+
+
+      SKU is the primary key. The supplier_id serves as a foreign key linking to the
+      supplier details.'
+    columns:
+    - name: sku
+      description: pk, "Unique identifier for each product. Used as the primary key
+        and formatted with a SKU prefix."
+      tests:
+      - unique
+      - not_null
+    - name: product_name
+      description: '"Name of the product, providing a unique descriptive label for
+        products."'
+    - name: category
+      description: '"Categorizes the product into segments like Toys, Home, Apparel,
+        or Electronics."'
+    - name: brand
+      description: '"Denotes the brand associated with the product."'
+    - name: cost_basis
+      description: '"Represents the cost basis for each product, used in pricing and
+        financial analysis."'
+    - name: supplier_id
+      description: '"Identifier for the supplier, establishing a relationship with
+        the supplier table."'
+    - name: created_at
+      description: '"Timestamp indicating when the product record was first created."'
+    - name: updated_at
+      description: '"Timestamp indicating the last update made to the product record."'
+  - name: recycling_batches
+    description: 'This table records recycling batch details including processing
+      dates, weights, costs, and certification status. It is primarily used for time-series
+      analysis of recycling operations by a processor.
+
+
+      The batch_id serves as the primary key. processor_name may link to a processor
+      entity in the system.'
+    columns:
+    - name: batch_id
+      description: pk, "Unique identifier for each recycling batch. Serves as the
+        primary key."
+      tests:
+      - unique
+      - not_null
+    - name: processor_name
+      description: '"Name of the recycling processor handling the batch. This field
+        helps in tracking which company processed the batch and may serve as a foreign
+        key reference."'
+    - name: material_type
+      description: '"Type of material processed in the batch (e.g., Metals)."'
+    - name: weight_kg
+      description: '"Weight in kilograms for the batch, representing the amount of
+        material processed."'
+    - name: processing_date
+      description: '"Date when the batch was processed."'
+    - name: disposal_cost
+      description: '"Cost incurred for disposal of the recycling batch."'
+    - name: certificate_of_destruction
+      description: '"Boolean flag indicating whether a certificate of destruction
+        is provided for the batch."'
+    - name: created_at
+      description: '"The date when the record was created in the database."'
+    - name: updated_at
+      description: '"The date when the record was last updated in the database."'
+  - name: refurbishment_records
+    description: 'Records refurbishment events for returned items, including financial,
+      quality, and warranty details. This table supports tracking refurbishment operations
+      in the product lifecycle.
+
+
+      The refurb_id is the primary key. return_item_id potentially acts as a foreign
+      key linking to the returns or items table. The table contains 41,009 rows of
+      transactional data.'
+    columns:
+    - name: refurb_id
+      description: pk, "Unique identifier for each refurbishment record. Serves as
+        the primary key."
+      tests:
+      - unique
+      - not_null
+    - name: return_item_id
+      description: '"Identifier for the returned item associated with this refurbishment.
+        May be used as a foreign key to link to the returns table."'
+    - name: partner_sku_id
+      description: '"Identifier for the partner SKU linked to the refurbished product,
+        facilitating product-level tracking."'
+    - name: refurb_grade
+      description: '"Grade assigned to the refurbishment, indicating the quality (e.g.,
+        A or B)."'
+    - name: cost_of_refurb
+      description: '"Cost incurred for the refurbishment process."'
+    - name: refurb_date
+      description: '"Date when the refurbishment was performed."'
+    - name: warranty_period_days
+      description: '"Warranty period provided post-refurbishment, expressed in days."'
+    - name: notes
+      description: '"Additional commentary or notes regarding the refurbishment record."'
+    - name: created_at
+      description: '"Timestamp indicating when the refurbishment record was created."'
+    - name: updated_at
+      description: '"Timestamp indicating the last update made to the refurbishment
+        record."'
+  - name: return_items
+    description: 'This table records each returned item along with detailed information
+      about its return condition, reason, and disposition outcome. It supports transactional
+      processing for return events.
+
+
+      Primary key is return_item_id. Foreign key relationships are implied for return_id
+      and order_item_id which likely reference the returns and order items tables
+      respectively.'
+    columns:
+    - name: return_item_id
+      description: pk, "Primary key that uniquely identifies each returned item record."
+      tests:
+      - unique
+      - not_null
+    - name: return_id
+      description: '"Foreign key linking the item to its overall return transaction."'
+    - name: order_item_id
+      description: '"Foreign key referencing the specific order item being returned."'
+    - name: condition_received
+      description: '"Indicates the physical condition of the returned item upon receipt
+        (e.g., `Like New`, `Damaged`, `Used`)."'
+    - name: reason_code
+      description: '"Specifies the reason for the return, such as damage or other
+        quality issues."'
+    - name: inspected_grade_id
+      description: '"Represents the quality grading outcome after the item is inspected."'
+    - name: disposition_outcome_id
+      description: '"Unique identifier for the final disposition outcome of the returned
+        item, typically matching the return item identifier."'
+    - name: created_at
+      description: '"The date when the return item record was created."'
+    - name: updated_at
+      description: '"The date when the return item record was last updated."'
+  - name: returns
+    description: 'Stores return transaction records including the return process initiation,
+      receipt, and corresponding refund issuance details.
+
+
+      Contains 214,080 rows (13.78MB) of transaction data. The return_id field is
+      the primary key, and order_id links to the associated order.'
+    columns:
+    - name: return_id
+      description: pk, "Unique numeric identifier for each return record. Serves as
+        the primary key."
+      tests:
+      - unique
+      - not_null
+    - name: return_external_id
+      description: '"External reference identifier for the return record, used in
+        external communications."'
+    - name: order_id
+      description: '"Identifier for the associated order. Likely serves as a foreign
+        key linking to the orders table."'
+    - name: return_initiated_date
+      description: '"Date when the customer initiated the return process."'
+    - name: return_received_date
+      description: '"Date when the returned item was received by the company."'
+    - name: refund_issued_date
+      description: '"Date when the refund was issued to the customer."'
+    - name: created_at
+      description: '"Date when the return record was created in the system."'
+    - name: updated_at
+      description: '"Date when the return record was last updated in the database."'
+  - name: shipment_records
+    description: 'Contains detailed records of shipments including unique identifiers,
+      tracking numbers, origin and destination locations, pickup and delivery dates,
+      shipment status, freight cost, and audit timestamps.
+
+
+      Primary key on shipment_id; origin_location_id and destination_location_id likely
+      serve as foreign keys linking to a locations table. Time series data for shipment
+      tracking.'
+    columns:
+    - name: shipment_id
+      description: pk, "Unique identifier for each shipment. Serves as the primary
+        key."
+      tests:
+      - unique
+      - not_null
+    - name: tracking_number
+      description: '"Unique tracking number assigned to the shipment."'
+    - name: origin_location_id
+      description: '"Identifier for the origin location of the shipment. Likely a
+        foreign key linking to a locations table."'
+    - name: destination_location_id
+      description: '"Identifier for the destination location of the shipment. Likely
+        a foreign key linking to a locations table."'
+    - name: pickup_date
+      description: '"Date when the shipment was picked up, stored in YYYY-MM-DD format."'
+    - name: delivery_date
+      description: '"Date when the shipment was delivered, stored in YYYY-MM-DD format."'
+    - name: status
+      description: '"Current status of the shipment (e.g., Delivered)."'
+    - name: freight_cost
+      description: '"Cost associated with the freight for the shipment, represented
+        as a floating point number."'
+    - name: created_at
+      description: '"Timestamp for when the shipment record was created."'
+    - name: updated_at
+      description: '"Timestamp for the most recent update to the shipment record."'

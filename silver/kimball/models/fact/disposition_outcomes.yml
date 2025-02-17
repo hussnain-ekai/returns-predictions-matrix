@@ -1,0 +1,42 @@
+version: 2
+models:
+-   name: disposition_outcomes
+    columns:
+    -   name: disposition_outcome_key
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: return_item_id
+        tests:
+        - not_null
+        - foreign_key_stg_return_items.return_item_id
+        meta:
+            column_type: int
+    -   name: chosen_channel
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: recovery_value
+        tests:
+        - not_null
+        - non_negative
+        meta:
+            column_type: decimal
+    -   name: processed_date
+        tests:
+        - not_null
+        meta:
+            column_type: date
+    -   name: created_at
+        tests:
+        - not_null
+        meta:
+            column_type: date
+    -   name: updated_at
+        tests:
+        - not_null
+        meta:
+            column_type: date

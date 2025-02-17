@@ -1,0 +1,39 @@
+version: 2
+models:
+-   name: stg_disposition_outcomes
+    columns:
+    -   name: disposition_outcome_id
+        tests:
+        - not_null
+        - unique
+        meta:
+            column_type: int
+    -   name: return_item_id
+        tests:
+        - not_null
+        meta:
+            column_type: int
+    -   name: chosen_channel
+        
+        meta:
+            column_type: varchar
+    -   name: recovery_value
+        
+        meta:
+            column_type: decimal
+    -   name: processed_date
+        
+        meta:
+            column_type: date
+    -   name: notes
+        
+        meta:
+            column_type: varchar
+    -   name: created_at
+        
+        meta:
+            column_type: date
+    -   name: updated_at
+        
+        meta:
+            column_type: date

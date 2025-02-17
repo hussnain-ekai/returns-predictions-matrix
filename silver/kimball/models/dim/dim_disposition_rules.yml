@@ -1,0 +1,40 @@
+version: 2
+models:
+-   name: disposition_rules
+    columns:
+    -   name: rule_key
+        tests:
+        - unique
+        - not_null
+        meta:
+            column_type: int
+    -   name: sku
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: condition_grade_id
+        tests:
+        - not_null
+        meta:
+            column_type: int
+    -   name: preferred_channel
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: decision_priority
+        tests:
+        - not_null
+        meta:
+            column_type: int
+    -   name: created_at
+        tests:
+        - not_null
+        meta:
+            column_type: timestamp
+    -   name: updated_at
+        tests:
+        - not_null
+        meta:
+            column_type: timestamp

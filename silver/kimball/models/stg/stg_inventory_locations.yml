@@ -1,0 +1,42 @@
+version: 2
+models:
+-   name: stg_inventory_locations
+    columns:
+    -   name: location_id
+        tests:
+        - not_null
+        meta:
+            column_type: int
+    -   name: location_code
+        tests:
+        - not_null
+        meta:
+            column_type: varchar
+    -   name: location_name
+        
+        meta:
+            column_type: varchar
+    -   name: address
+        
+        meta:
+            column_type: varchar
+    -   name: city
+        
+        meta:
+            column_type: varchar
+    -   name: state
+        
+        meta:
+            column_type: varchar
+    -   name: country
+        
+        meta:
+            column_type: varchar
+    -   name: created_at
+        
+        meta:
+            column_type: varchar
+    -   name: updated_at
+        
+        meta:
+            column_type: varchar
